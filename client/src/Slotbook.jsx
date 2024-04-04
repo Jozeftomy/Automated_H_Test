@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './slotbooking.css'; // Import your CSS file
+import axios from 'axios';
+import { backendBaseUrl } from './utils/urls';
 
 const BookingSlot = () => {
   // State to keep track of selected date and slot
@@ -24,14 +26,26 @@ const BookingSlot = () => {
   };
 
   // Function to handle booking
-  const handleBooking = () => {
+  const handleBooking = async () => {
     if (selectedSlot) {
-      setBookingMessage(`Slot ${selectedSlot} booked successfully!`);
-      // You can add logic here to update the backend with the booking information
-      // For now, we'll just reset the selected slot
-      setSelectedSlot(null);
+      // Prepare the booking data to send to the backend
+      const bookingData = {
+        date: selectedDate,
+        slot: selectedSlot,
+      };
+  
+      await axios.post(`${backendBaseUrl}/api/bookings/`, bookingData)
+        .then(response => {
+          setBookingMessage(`Slot ${selectedSlot} booked successfully!`);
+          setSelectedSlot(null);
+        })
+        .catch(error => {
+          console.error('Error booking slot:', error);
+          setBookingMessage('Failed to book slot. Please try again later.');
+        });
     }
   };
+  
 
   return (
     <div className="booking-slot-container">

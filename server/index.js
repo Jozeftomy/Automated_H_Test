@@ -28,6 +28,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const UserModel = require('./models/User'); // Import the User model instead of Automated_H_Test
+const bookingRoutes=require('./slotbooking/booking.routes')
 
 const app = express();
 app.use(express.json());
@@ -39,7 +40,7 @@ app.post('/users', (req, res) => {
         .then(user => res.json(user))
         .catch(err => res.json(err));
 });
-
+app.use('/api', bookingRoutes);
 app.listen(3001, () => {
     console.log("server is running");
 });

@@ -11,7 +11,7 @@ app.use(cors());
 // Use booking routes
 app.use('/api', bookingRoutes);
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
