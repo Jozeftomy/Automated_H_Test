@@ -7,6 +7,7 @@ const BookingSlot = () => {
   // State to keep track of selected date and slot
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [bookingMessage, setBookingMessage] = useState('');
 
   // Array of available slots
   const slots = [
@@ -20,6 +21,16 @@ const BookingSlot = () => {
   // Function to handle slot selection
   const handleSlotSelect = (slotId) => {
     setSelectedSlot(slotId);
+  };
+
+  // Function to handle booking
+  const handleBooking = () => {
+    if (selectedSlot) {
+      setBookingMessage(`Slot ${selectedSlot} booked successfully!`);
+      // You can add logic here to update the backend with the booking information
+      // For now, we'll just reset the selected slot
+      setSelectedSlot(null);
+    }
   };
 
   return (
@@ -53,14 +64,17 @@ const BookingSlot = () => {
         </div>
       )}
 
-      <div className="selected-slot">
-        {selectedSlot && (
-          <p>
-            You have booked your slot sucessfully: {slots.find((slot) => slot.id === selectedSlot).time} on{' '}
-            {selectedDate.toLocaleDateString()}
-          </p>
-        )}
-      </div>
+      {/* Booking Button */}
+      {selectedSlot && (
+        <div className="book-button-container">
+          <button className="book-button" onClick={handleBooking}>Book</button>
+        </div>
+      )}
+
+      {/* Booking Message */}
+      {bookingMessage && (
+        <div className="booking-message">{bookingMessage}</div>
+      )}
     </div>
   );
 };
