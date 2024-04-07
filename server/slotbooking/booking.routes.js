@@ -6,9 +6,10 @@ const router = express.Router();
 
 // Route to handle booking creation
 router.post('/bookings', async (req, res) => {
+  console.log("entered in bookings")
   try {
-    const { date, slot } = req.body;
-    const booking = await Booking.create({ date, slot });
+    const { date, slot, username } = req.body;
+    const booking = await Booking.create({ date, slot, username });
     res.status(201).json(booking);
   } catch (error) {
     console.error('Error creating booking:', error);
