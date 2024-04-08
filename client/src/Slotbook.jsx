@@ -10,6 +10,8 @@ const BookingSlot = ({ username }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [bookingMessage, setBookingMessage] = useState("");
+  const randomNumber = Math.floor(Math.random() * 5); 
+
 
   // Array of available slots
   const slots = [
@@ -70,7 +72,9 @@ const BookingSlot = ({ username }) => {
             {slots.map((slot) => (
               <div
                 key={slot.id}
-                className={`slot ${selectedSlot === slot.id ? "selected" : ""}`}
+                className={`slot ${
+                  selectedSlot === slot.id ? "selected" : ""
+                } slot ${selectedSlot === randomNumber ? "booked" : ""}`}
                 onClick={() => handleSlotSelect(slot.id)}
               >
                 {slot.time}
