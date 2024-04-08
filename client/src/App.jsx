@@ -5,24 +5,30 @@ import Land from "./Land";
 import Slotbook from "./Slotbook";
 import Faq from "./Faq";
 import Admin from "./Admin";
+import { useState } from "react";
 
 
 function App() {
- 
-
+  const [username, setUsername] = useState("");
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route index element={<Land/>} />
-          <Route path="/login" element={<LoginSignup/>} />
-          <Route path="/loginSignup/slot" element={<Slotbook/>} />
-          <Route path="/faq" element={<Faq/>}/>
-          <Route path="/admin" element={<Admin/>}/>
+          <Route index element={<Land />} />
+          <Route
+            path="/login"
+            element={<LoginSignup setUsername={setUsername} />}
+          />
+          <Route
+            path="/loginSignup/slot"
+            element={<Slotbook username={username} />}
+          />
+          <Route path="/faq" element={<Faq />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
-        </BrowserRouter>
+      </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

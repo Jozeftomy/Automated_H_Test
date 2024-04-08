@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import './slotbooking.css'; // Import your CSS file
-import axios from 'axios';
-import { backendBaseUrl } from './utils/urls';
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "./slotbooking.css"; // Import your CSS file
+import axios from "axios";
+import { backendBaseUrl } from "./utils/urls";
 
-const BookingSlot = () => {
+const BookingSlot = ({ username }) => {
   // State to keep track of selected date and slot
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
-  const [bookingMessage, setBookingMessage] = useState('');
+  const [bookingMessage, setBookingMessage] = useState("");
+  const randomNumber = Math.floor(Math.random() * 5); 
+
 
   // Array of available slots
   const slots = [
-    { time: '9am', id: 1 },
-    { time: '10am', id: 2 },
-    { time: '11am', id: 3 },
-    { time: '2pm', id: 4 },
-    { time: '3pm', id: 5 },
+    { time: "9am", id: 1 },
+    { time: "10am", id: 2 },
+    { time: "11am", id: 3 },
+    { time: "2pm", id: 4 },
+    { time: "3pm", id: 5 },
   ];
 
   // Function to handle slot selection
@@ -32,20 +34,22 @@ const BookingSlot = () => {
       const bookingData = {
         date: selectedDate,
         slot: selectedSlot,
+        username,
       };
-  
-      await axios.post(`${backendBaseUrl}/api/bookings/`, bookingData)
-        .then(response => {
+
+      console.log("bookingData", bookingData);
+      await axios
+        .post(`${backendBaseUrl}/api/bookings/`, bookingData)
+        .then((response) => {
           setBookingMessage(`Slot ${selectedSlot} booked successfully!`);
           setSelectedSlot(null);
         })
-        .catch(error => {
-          console.error('Error booking slot:', error);
-          setBookingMessage('Failed to book slot. Please try again later.');
+        .catch((error) => {
+          console.error("Error booking slot:", error);
+          setBookingMessage("Failed to book slot. Please try again later.");
         });
     }
   };
-  
 
   return (
     <div className="booking-slot-container">
@@ -68,7 +72,9 @@ const BookingSlot = () => {
             {slots.map((slot) => (
               <div
                 key={slot.id}
-                className={`slot ${selectedSlot === slot.id ? 'selected' : ''}`}
+                className={`slot ${
+                  selectedSlot === slot.id ? "selected" : ""
+                } slot ${selectedSlot === randomNumber ? "booked" : ""}`}
                 onClick={() => handleSlotSelect(slot.id)}
               >
                 {slot.time}
@@ -81,7 +87,9 @@ const BookingSlot = () => {
       {/* Booking Button */}
       {selectedSlot && (
         <div className="book-button-container">
-          <button className="book-button" onClick={handleBooking}>Book</button>
+          <button className="book-button" onClick={handleBooking}>
+            Book
+          </button>
         </div>
       )}
 
