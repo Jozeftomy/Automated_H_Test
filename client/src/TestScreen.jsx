@@ -14,9 +14,9 @@ import {
 } from "@mui/material";
 
 const DriveTestEasy = () => {
-  const [user, setUser] = useState("George");
+  const [users, setUsers] = useState([]);
   const [data, setData] = useState([]);
-  const [connectionActive, setConnectionActive] = useState(true);
+  const [connectionActive, setConnectionActive] = useState(false);
   const [buttonText, setButtonText] = useState("Start");
   const [buttonColor, setButtonColor] = useState("primary");
   const [isLoading, setIsLoading] = useState(false);
@@ -28,15 +28,10 @@ const DriveTestEasy = () => {
         const response = await fetch("http://localhost:8000/users");
         if (!response.ok) throw new Error("Network response was not ok");
         const users = await response.json();
-
-        if (users.length > 0) {
-          setUser([users[0]]);
-        } else {
-          setUser([]);
-        }
+        setUsers(users.length > 0 ? [users[0]] : []);
       } catch (error) {
         console.error("Failed to fetch users:", error);
-        setUser([]);
+        setUsers([]);
       } finally {
         setIsLoading(false);
       }
@@ -49,46 +44,37 @@ const DriveTestEasy = () => {
     if (!connectionActive) return;
 
     const ws = new WebSocket("ws://localhost:8000");
-
-    ws.onopen = () => {
-      console.log("Connected to the WebSocket");
-    };
-
+    ws.onopen = () => console.log("Connected to the WebSocket");
     ws.onmessage = (event) => {
       console.log("Data received:", event.data);
       setData((prevData) => [...prevData, event.data]);
-
-      if (event.data === "4") {
-        setButtonText("PASSED");
-        setButtonColor("success");
-        setIsLoading(false); // Stop loading once message is received
-      } else if (event.data === "8") {
-        setButtonText("FAILED");
-        setButtonColor("error");
-        setIsLoading(false); // Stop loading once message is received
-      }
+      handleWebSocketData(event.data);
     };
-
     ws.onerror = (error) => {
       console.error("WebSocket Error:", error);
       setIsLoading(false);
     };
 
-    return () => {
-      ws.close();
-    };
+    return () => ws.close();
   }, [connectionActive]);
 
-  const handleStart = () => {
-    if (!connectionActive) {
-      setConnectionActive(true);
+  const handleWebSocketData = (data) => {
+    if (data === "4") {
+      setButtonText("PASSED");
+      setButtonColor("success");
+    } else if (data === "8") {
+      setButtonText("FAILED");
+      setButtonColor("error");
     }
+    setIsLoading(false);
+  };
+
+  const handleStart = () => {
+    setConnectionActive(true);
     setIsLoading(true);
     fetch("http://localhost:8000/test")
       .then((response) => response.text())
-      .then((message) => {
-        console.log(message);
-      })
+      .then((message) => console.log(message))
       .catch((error) => {
         console.error("Error triggering data:", error);
         setIsLoading(false);
@@ -120,7 +106,7 @@ const DriveTestEasy = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {user.map((user, index) => (
+              {users.map((user, index) => (
                 <TableRow key={index}>
                   <TableCell>H</TableCell>
                   <TableCell>{user.name}</TableCell>
