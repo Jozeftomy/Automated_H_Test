@@ -13,7 +13,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-const DriveTestEasy = () => {
+const TestScreen = () => {
   const [users, setUsers] = useState([]);
   const [data, setData] = useState([]);
   const [connectionActive, setConnectionActive] = useState(false);
@@ -90,8 +90,13 @@ const DriveTestEasy = () => {
       style={{ height: "100vh" }}
     >
       <Grid item xs={4} sm={6} md={8}>
-        <Typography variant="h4" align="center" gutterBottom>
-          Drive Test Easy
+        <Typography
+          variant="h4"
+          align="center"
+          gutterBottom
+          sx={{ paddingBottom: "50px" }}
+        >
+          Automated-H-Test
         </Typography>
         <TableContainer component={Paper}>
           <Table>
@@ -168,4 +173,4 @@ const DriveTestEasy = () => {
   );
 };
 
-export default DriveTestEasy;
+export default TestScreen;
