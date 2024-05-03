@@ -6,7 +6,7 @@ import Slotbook from "./Slotbook";
 import Faq from "./Faq";
 import Admin from "./Admin";
 import { useState } from "react";
-
+import TestScreen from "./TestScreen";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -25,6 +25,7 @@ function App() {
           />
           <Route path="/faq" element={<Faq />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/test" element={<TestScreen />} />
         </Routes>
       </BrowserRouter>
     </>
