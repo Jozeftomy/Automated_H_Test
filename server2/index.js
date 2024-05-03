@@ -37,23 +37,20 @@ parser.on("data", (data) => {
   }
 });
 
-// MongoDB connection string
 const connectionString =
   "mongodb+srv://josephtomy02:nypTxnJpT33mUMxx@cluster0.q0pzxp5.mongodb.net/automated_h_test?retryWrites=true&w=majority";
 
-// Define your user schema
 const userSchema = new mongoose.Schema({
   name: String,
   email: String,
   dob: String,
-  slotNo: Number, // assuming there is a slot number
-  status: String, // assuming there is a status field
-  result: String, // assuming there is a result field
+  slotNo: Number,
+  status: String,
+  result: String,
 });
 
 const User = mongoose.model("users", userSchema);
 
-// Connect to MongoDB
 mongoose
   .connect(connectionString, {
     useNewUrlParser: true,
@@ -62,14 +59,14 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
 
-app.use(cors()); // Use CORS to allow cross-origin requests
+app.use(cors());
 
-// Get all users
 app.get("/users", async (req, res) => {
   try {
-    const users = await User.find({});
-    res.json(users);
+    const user = await User.find({}).sort({ createdAt: -1 }).limit(1);
+    res.json(user);
   } catch (error) {
+    console.error("Error retrieving the last created user:", error);
     res.status(500).send(error);
   }
 });

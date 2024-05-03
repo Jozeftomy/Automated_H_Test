@@ -15,15 +15,35 @@ import {
 
 const DriveTestEasy = () => {
   const [user, setUser] = useState("George");
-  const [slotNo, setSlotNo] = useState(3);
-  const [testDate, setTestDate] = useState("2024-04-14");
-  const [status, setStatus] = useState("Learners");
-  const [result, setResult] = useState("Passed");
   const [data, setData] = useState([]);
   const [connectionActive, setConnectionActive] = useState(true);
   const [buttonText, setButtonText] = useState("Start");
   const [buttonColor, setButtonColor] = useState("primary");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch("http://localhost:8000/users");
+        if (!response.ok) throw new Error("Network response was not ok");
+        const users = await response.json();
+
+        if (users.length > 0) {
+          setUser([users[0]]);
+        } else {
+          setUser([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+        setUser([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     if (!connectionActive) return;
@@ -83,7 +103,7 @@ const DriveTestEasy = () => {
       justifyContent="center"
       style={{ height: "100vh" }}
     >
-      <Grid item xs={12} sm={6} md={4}>
+      <Grid item xs={4} sm={6} md={8}>
         <Typography variant="h4" align="center" gutterBottom>
           Drive Test Easy
         </Typography>
@@ -91,35 +111,37 @@ const DriveTestEasy = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Field</TableCell>
+                <TableCell>Test</TableCell>
                 <TableCell>User</TableCell>
                 <TableCell>Slot No.</TableCell>
-                <TableCell>Test Date</TableCell>
+                <TableCell>DOB</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Result</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>Value</TableCell>
-                <TableCell>{user}</TableCell>
-                <TableCell>{slotNo}</TableCell>
-                <TableCell>{testDate}</TableCell>
-                <TableCell>{status}</TableCell>
-                <TableCell>
-                  <Button
-                    onClick={handleStart}
-                    variant="contained"
-                    color={buttonColor}
-                  >
-                    {isLoading ? (
-                      <CircularProgress size={24} color="inherit" />
-                    ) : (
-                      buttonText
-                    )}
-                  </Button>
-                </TableCell>
-              </TableRow>
+              {user.map((user, index) => (
+                <TableRow key={index}>
+                  <TableCell>H</TableCell>
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell>{user.slotNo}</TableCell>
+                  <TableCell>{user.dob}</TableCell>
+                  <TableCell>Learners</TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={handleStart}
+                      variant="contained"
+                      color={buttonColor}
+                    >
+                      {isLoading ? (
+                        <CircularProgress size={24} color="inherit" />
+                      ) : (
+                        buttonText
+                      )}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
