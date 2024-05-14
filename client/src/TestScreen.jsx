@@ -59,14 +59,35 @@ const TestScreen = () => {
   }, [connectionActive]);
 
   const handleWebSocketData = (data) => {
+    let status = "";
     if (data === "4") {
+      status = "PASSED";
       setButtonText("PASSED");
       setButtonColor("success");
     } else if (data === "8") {
+      status = "FAILED";
       setButtonText("FAILED");
       setButtonColor("error");
     }
     setIsLoading(false);
+
+    // Send status to backend
+    fetch("http://localhost:8000/update-status", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to update status");
+        }
+        console.log("Status updated successfully");
+      })
+      .catch((error) => {
+        console.error("Failed to update status:", error);
+      });
   };
 
   const handleStart = () => {

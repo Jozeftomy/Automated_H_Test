@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Signup({ setUsername }) {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     dob: "",
     password: "",
     confirmPassword: "",
-    aadharNumber: "", // Add Aadhar card number field to formData
+    aadharNumber: "",
   });
   const [error, setError] = useState("");
 
@@ -20,46 +19,49 @@ function Signup({ setUsername }) {
   };
 
   const handleSubmit = async () => {
-    // Validation: Check if all fields are filled
-    // if (!formData.name || !formData.email || !formData.dob || !formData.password || !formData.confirmPassword || !formData.aadharNumber) {
-    //   setError('All fields are required');
-    //   return;
-    // }
-    // // Validation: Check if passwords match
-    // if (formData.password !== formData.confirmPassword) {
-    //   setError('Passwords do not match');
-    //   return;
-    // }
-    // // Validation: Check if DOB is valid (you may implement more complex validation logic)
-    // const dobRegex = /^\d{4}-\d{2}-\d{2}$/;
-    // if (!dobRegex.test(formData.dob)) {
-    //   setError('Invalid date of birth format (YYYY-MM-DD)');
-    //   return;
-    // }
-    // // Validation: Check if email is valid
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // if (!emailRegex.test(formData.email)) {
-    //   setError('Invalid email format');
-    //   return;
-    // }
-    // // Validation: Check if password contains characters, numbers, and special characters
-    // const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
-    // if (!passwordRegex.test(formData.password)) {
-    //   setError('Password must contain at least one letter, one number, and one special character');
-    //   return;
-    // }
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.dob ||
+      !formData.password ||
+      !formData.confirmPassword ||
+      !formData.aadharNumber
+    ) {
+      setError("All fields are required");
+      return;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    const dobRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dobRegex.test(formData.dob)) {
+      setError("Invalid date of birth format (YYYY-MM-DD)");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError("Invalid email format");
+      return;
+    }
+    const passwordRegex =
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    if (!passwordRegex.test(formData.password)) {
+      setError(
+        "Password must contain at least one letter, one number, and one special character"
+      );
+      return;
+    }
 
     try {
-      // Perform signup logic here (e.g., send signup request to server)
-      setUsername(formData.name);
       const response = await axios.post(
         "http://localhost:3001/users",
         formData
       );
-      console.log(response.data); // handle success response here
-      navigate("/loginSignup/slot"); // navigate after successful signup
+      setUsername(formData.name);
+      navigate("/options");
     } catch (error) {
-      console.error("Error signing up:", error); // handle error here
+      setError(error.response?.data?.message || "Error signing up");
     }
   };
 
