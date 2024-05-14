@@ -17,8 +17,11 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 // Initialize SerialPort and parser
-const port = new SerialPort({ path: "COM3", baudRate: 9600 });
-const parser = port.pipe(new ReadlineParser({ delimiter: "\r\n" }));
+const port1 = new SerialPort({ path: "COM3", baudRate: 9600 });
+const parser1 = port1.pipe(new ReadlineParser({ delimiter: "\r\n" }));
+
+// const port2 = new SerialPort({ path: "COM4", baudRate: 9600 });
+// const parser2 = port1.pipe(new ReadlineParser({ delimiter: "\r\n" }));
 
 let sendData = false;
 
@@ -29,7 +32,7 @@ app.get("/test", (req, res) => {
 });
 
 // Handle incoming data from serial port
-parser.on("data", (data) => {
+parser1.on("data", (data) => {
   console.log(data);
   if (sendData) {
     if (data == 8 || data == 4) {
@@ -43,6 +46,21 @@ parser.on("data", (data) => {
     }
   }
 });
+
+// parser2.on("data", (data) => {
+//   console.log(data);
+//   if (sendData) {
+//     if (data == 8 || data == 4) {
+//       wss.clients.forEach((client) => {
+//         if (client.readyState === WebSocket.OPEN) {
+//           client.send(data);
+//         }
+//       });
+
+//       sendData = false;
+//     }
+//   }
+// });
 
 // MongoDB connection string
 const connectionString =
