@@ -36,7 +36,7 @@ function Login({ setUsername }) {
           console.log("Recieved User Details");
           console.log(response.data);
           if (response.data) {
-            navigate("/loginSignup/slot");
+            navigate("/options");
           } else {
             setIsValid(true);
           }
